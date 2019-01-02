@@ -1,0 +1,25 @@
+language: python
+python:
+  - "3.6"
+addons:
+  apt:
+    packages:
+      - build-essential
+      - libxslt-dev
+      - libzip-dev
+      - libldap2-dev
+      - libsasl2-dev
+  sauce_connect:
+    username: $SAUCE_USERNAME
+    access_key: $SAUCE_ACCESS_KEY
+install:
+  - pip install -r requirements.txt
+  - pip install -r test-requirements.txt
+before_script:
+  - sleep 10
+  - ./odoo-bin --http-port=1234 > /dev/null 2>&1 &
+  - sleep 10
+script:
+  - ./odoo-bin &
+  - cd acceptance && behave --stage=ui
+cache: pip
