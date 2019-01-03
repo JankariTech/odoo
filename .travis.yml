@@ -20,8 +20,9 @@ install:
 before_script:
   - sleep 10
   - psql -c 'create database test_db;' -U postgres
+  - psql -c 'create user test_user with password 'test_pwd';' -U postgres
   - sleep 10
-  - ./odoo-bin start -i base -d test_db &
+  - ./odoo-bin start -i base -d test_db -r test_user -w test_pwd &
   - sleep 40
 script:
   - cd acceptance && behave --stage=ui
