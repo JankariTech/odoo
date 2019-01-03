@@ -6,5 +6,5 @@ Feature: Login
   Scenario: User logs in with correct password
     Given the admin has been created
     When the admin browses to the login page
-    And the admin logs in with username "admin@odoo.org" and email "admin"
+    And the admin logs in with username "admin" and email "admin"
     Then the user should be redirected to the Inbox Page
