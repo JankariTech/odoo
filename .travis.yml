@@ -1,9 +1,8 @@
 language: python
 python:
   - "3.6"
-services:
-  - postgresql
 addons:
+  postgresql: 10.6
   apt:
     packages:
       - build-essential
@@ -14,13 +13,16 @@ addons:
   sauce_connect:
     username: $SAUCE_USERNAME
     access_key: $SAUCE_ACCESS_KEY
+env:
+  global:
+    - SELENIUM_URL=http://$SAUCE_USERNAME:$SAUCE_ACCESS_KEY@localhost:4445/wd/hub
 install:
   - pip install -r requirements.txt
   - pip install -r test-requirements.txt
 before_script:
   - sleep 10
   - psql -c 'create database test_db;' -U postgres
-  - psql -c 'create user test_user with password 'test_pwd';' -U postgres
+  - psql -c "create user test_user with password 'test_pwd';" -U postgres
   - sleep 10
   - ./odoo-bin start -i base -d test_db -r test_user -w test_pwd &
   - sleep 40
