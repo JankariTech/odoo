@@ -19,8 +19,11 @@ def browser(context):
     if driver == "remote":
         selenium_url = os.environ.get("SELENIUM_URL") or user_data.get("selenium_url", "http://localhost:4444/wd/hub")
         kwargs.update({"url": selenium_url, "driver_name": "remote", "browser": "chrome"})
+
     print(kwargs)
     context.browser = Browser(**kwargs)
+    if os.environ.get("CI"):
+        print("View SauceLabs jobs at: https://saucelabs.com/jobs/{}".format(context.browser.driver.session_id))
     yield context.browser
 
     # CLEANUP
@@ -40,6 +43,7 @@ def get_pages(context):
 
 def before_all(context):
     use_fixture(browser, context)
+
 
 def before_tag(context, tag):
     if "fixture.browser" in tag:
