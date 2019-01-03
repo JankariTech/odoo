@@ -2,6 +2,7 @@ language: python
 python:
   - "3.6"
 addons:
+  postgresql: "10"
   apt:
     packages:
       - build-essential
@@ -9,20 +10,26 @@ addons:
       - libzip-dev
       - libldap2-dev
       - libsasl2-dev
+      - postgresql-10
+      - postgresql-client-10
+  hosts: &common_hosts
+    - odoo
   sauce_connect:
     username: $SAUCE_USERNAME
     access_key: $SAUCE_ACCESS_KEY
 env:
   global:
+    - PGPORT=5433
     - SELENIUM_URL=http://$SAUCE_USERNAME:$SAUCE_ACCESS_KEY@localhost:4445/wd/hub
 install:
   - pip install -r requirements.txt
   - pip install -r test-requirements.txt
 before_script:
-  - sleep 10
-  - ./odoo-bin > /dev/null 2>&1 &
-  - sleep 10
+  - ./odoo-bin start -i base --logfile=server.log &
+  - sleep 180
+  - netstat -lntu
 script:
-  - ./odoo-bin &
-  - cd acceptance && behave --stage=ui
+  - cd $TRAVIS_BUILD_DIR/acceptance && behave --stage=ui
+after_failure:
+  - cat $TRAVIS_BUILD_DIR/server.log
 cache: pip
