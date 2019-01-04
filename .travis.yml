@@ -22,7 +22,6 @@ install:
 before_script:
   - ./odoo-bin start -i base --logfile=server.log &
   - sleep 100
-  - netstat -lntu
 script:
   - cd $TRAVIS_BUILD_DIR/acceptance && behave --stage=ui
 after_failure:
