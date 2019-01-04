@@ -1,8 +1,8 @@
+dist: xenial
 language: python
 python:
   - "3.6"
 addons:
-  postgresql: "10"
   apt:
     packages:
       - build-essential
@@ -10,23 +10,18 @@ addons:
       - libzip-dev
       - libldap2-dev
       - libsasl2-dev
-      - postgresql-10
-      - postgresql-client-10
-  hosts: &common_hosts
-    - odoo
-  sauce_connect:
-    username: $SAUCE_USERNAME
-    access_key: $SAUCE_ACCESS_KEY
+  sauce_connect: true
+services:
+  - postgresql
 env:
   global:
-    - PGPORT=5433
     - SELENIUM_URL=http://$SAUCE_USERNAME:$SAUCE_ACCESS_KEY@localhost:4445/wd/hub
 install:
   - pip install -r requirements.txt
   - pip install -r test-requirements.txt
 before_script:
-  - ./odoo-bin start -p 1234 -i base --logfile=server.log &
-  - sleep 180
+  - ./odoo-bin start -i base --logfile=server.log &
+  - sleep 100
   - netstat -lntu
 script:
   - cd $TRAVIS_BUILD_DIR/acceptance && behave --stage=ui
