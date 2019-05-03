@@ -173,3 +173,9 @@ class TestEquipmentMulticompany(TransactionCase):
         # Now here is total 1 maintenance request can be view by Normal User
         self.assertEquals(MaintenanceRequest.sudo(equipment_manager).search_count([]), 2)
         self.assertEquals(MaintenanceRequest.sudo(user).search_count([]), 1)
+
+    def test_13_hello_world(self):
+        expected = "123"
+        actual = "123"
+
+        self.assertEqual(expected, actual)
